@@ -192,12 +192,12 @@ importers:
       '@lezer/highlight':
         specifier: ^1.2.3
         version: 1.2.3
+      '@paibanmiao/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@uiw/codemirror-theme-github':
         specifier: ^4.25.3
         version: 4.25.3(@codemirror/language@6.11.3)(@codemirror/state@6.5.2)(@codemirror/view@6.38.8)
-      '@wemd/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       codemirror:
         specifier: ^6.0.2
         version: 6.0.2
