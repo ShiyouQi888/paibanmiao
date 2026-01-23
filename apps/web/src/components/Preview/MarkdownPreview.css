@@ -1,0 +1,70 @@
+.markdown-preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-preview, #fff);
+}
+
+.preview-container {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+}
+
+.preview-content {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--bg-primary);
+  padding: 40px;
+  border-radius: 0; /* 移除圆角 */
+  box-shadow: none; /* 移除阴影 */
+  min-height: calc(100% - 48px);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .preview-container {
+    padding: 16px;
+  }
+
+  .preview-content {
+    padding: 24px 20px;
+  }
+}
+
+/* 确保斜体样式生效 */
+#paibanmiao em {
+  font-style: italic !important;
+  font-synthesis: style;
+  /* 允许浏览器合成斜体 */
+}
+
+/* 强制图片自适应，修复浏览器存储模式下图片过大的问题 */
+#paibanmiao img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 10px auto;
+}
+
+/* 针对整个预览容器启用字体合成 */
+#paibanmiao {
+  font-synthesis: style weight;
+}
+
+#paibanmiao p {
+  text-indent: 2em;
+}
+
+/* ========================================
+   深色模式 - 预览容器背景（接近微信深色模式）
+   ======================================== */
+[data-ui-theme="dark"] .markdown-preview,
+[data-ui-theme="dark"] .preview-container,
+[data-ui-theme="dark"] .preview-content {
+  background: #0f1113;
+}
+
+[data-ui-theme="dark"] .preview-content {
+  box-shadow: none;
+}
