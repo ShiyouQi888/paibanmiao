@@ -27,7 +27,7 @@ export interface SettingsStore {
 
 export const useSettingsStore = create<SettingsStore>()(
   persist(
-    () => ({
+    (): SettingsStore => ({
       deepseekConfig: {
         apiKey: "",
         baseUrl: "https://api.deepseek.com",
