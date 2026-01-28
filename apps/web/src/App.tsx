@@ -80,6 +80,18 @@ function App() {
   const copyToWechat = useEditorStore((state) => state.copyToWechat);
   const [showThemePanel, setShowThemePanel] = useState(false);
   const [isUserSettingsOpen, setIsUserSettingsOpen] = useState(false);
+  const [userSettingsConfig, setUserSettingsConfig] = useState<{
+    tab: "profile" | "settings";
+    section: "none" | "storage" | "imagehost" | "ai";
+  }>({ tab: "profile", section: "none" });
+
+  const openUserSettings = (
+    tab: "profile" | "settings" = "profile",
+    section: "none" | "storage" | "imagehost" | "ai" = "none",
+  ) => {
+    setUserSettingsConfig({ tab, section });
+    setIsUserSettingsOpen(true);
+  };
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [showLanding, setShowLanding] = useState(() => {
     // Electron 模式不显示官网，Web 模式默认显示
@@ -305,6 +317,8 @@ function App() {
         <UserSettingsModal
           isOpen={isUserSettingsOpen}
           onClose={() => setIsUserSettingsOpen(false)}
+          initialTab={userSettingsConfig.tab}
+          initialSection={userSettingsConfig.section}
         />
       </Suspense>
 
@@ -362,7 +376,7 @@ function App() {
             onToggle={() => setShowHistory((prev) => !prev)}
             activeTab={activeTab}
             onTabChange={setActiveTab as any}
-            onUserClick={() => setIsUserSettingsOpen(true)}
+            onUserClick={() => openUserSettings("profile")}
             onCreateFile={handleCreateFile}
           >
             {ready && (
@@ -383,6 +397,7 @@ function App() {
           <WorkbenchHeader
             onThemeClick={() => setShowThemePanel(true)}
             onCopyClick={copyToWechat}
+            onSettingsClick={(section) => openUserSettings("settings", section)}
           />
           <div className="workspace-content">
             <div
@@ -447,7 +462,7 @@ function App() {
             onViewChange={setActiveView}
             onCopyToWechat={copyToWechat}
             onOpenTheme={() => setShowThemePanel(true)}
-            onOpenUser={() => setIsUserSettingsOpen(true)}
+            onOpenUser={() => openUserSettings("profile")}
             onOpenHistory={() => setIsHistoryOpen(true)}
           />
         )}

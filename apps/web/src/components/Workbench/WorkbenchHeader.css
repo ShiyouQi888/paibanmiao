@@ -61,6 +61,17 @@
   background: var(--bg-hover);
 }
 
+.header-actions .btn-ai-write {
+  background: rgba(7, 193, 96, 0.1);
+  color: #07c160;
+  border: 1px solid rgba(7, 193, 96, 0.2);
+}
+
+.header-actions .btn-ai-write:hover {
+  background: rgba(7, 193, 96, 0.15);
+  transform: translateY(-1px);
+}
+
 .header-actions .btn-copy-wechat {
   background: #07c160;
   color: white;

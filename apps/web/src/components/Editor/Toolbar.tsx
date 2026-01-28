@@ -28,6 +28,10 @@ import {
   ChevronLeft,
   ListEnd,
   IndentIncrease,
+  Sparkles,
+  Wand2,
+  FileText,
+  CheckCircle2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -38,6 +42,7 @@ import "./Toolbar.css";
 
 interface ToolbarProps {
   onInsert: (prefix: string, suffix: string, placeholder: string) => void;
+  onAIAction?: (action: "convert") => void;
 }
 
 const mermaidPrimaryTemplates = [
@@ -157,12 +162,14 @@ const mermaidMoreTemplates = [
   },
 ];
 
-export function Toolbar({ onInsert }: ToolbarProps) {
+export function Toolbar({ onInsert, onAIAction }: ToolbarProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [showMermaidMenu, setShowMermaidMenu] = useState(false);
   const [showMermaidMore, setShowMermaidMore] = useState(false);
+  const [showAIMenu, setShowAIMenu] = useState(false);
   const mermaidMenuRef = useRef<HTMLDivElement>(null);
+  const aiMenuRef = useRef<HTMLDivElement>(null);
   const mermaidMoreRef = useRef<HTMLDivElement>(null);
   const mermaidSubmenuRef = useRef<HTMLDivElement>(null);
   const [mermaidSubmenuSide, setMermaidSubmenuSide] = useState<
@@ -189,15 +196,21 @@ export function Toolbar({ onInsert }: ToolbarProps) {
         setShowMermaidMenu(false);
         setShowMermaidMore(false);
       }
+      if (
+        aiMenuRef.current &&
+        !aiMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowAIMenu(false);
+      }
     };
 
-    if (showMermaidMenu) {
+    if (showMermaidMenu || showAIMenu) {
       document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showMermaidMenu]);
+  }, [showMermaidMenu, showAIMenu]);
 
   useEffect(() => {
     if (!showMermaidMore) return;
@@ -398,6 +411,17 @@ export function Toolbar({ onInsert }: ToolbarProps) {
 
   return (
     <div className="md-toolbar">
+      {/* AI 助手 - 整理为 Markdown */}
+      <button
+        className="md-toolbar-btn ai-btn"
+        onClick={() => onAIAction?.("convert")}
+        data-tooltip="AI 整理为 Markdown"
+      >
+        <Sparkles size={16} color="var(--accent-primary)" />
+      </button>
+
+      <div className="md-toolbar-divider" />
+
       {tools.map((tool, index) => (
         <button
           key={index}

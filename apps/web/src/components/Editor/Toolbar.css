@@ -45,6 +45,23 @@
   color: var(--text-tertiary);
 }
 
+.ai-btn {
+  background: rgba(7, 193, 96, 0.08);
+  margin-right: 4px;
+}
+
+.ai-btn:hover {
+  background: rgba(7, 193, 96, 0.15);
+  transform: translateY(-1px);
+}
+
+.md-toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-color);
+  margin: 0 8px;
+}
+
 .spinning {
   animation: spin 1s linear infinite;
 }

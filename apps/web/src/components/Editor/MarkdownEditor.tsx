@@ -13,6 +13,7 @@ import { countWords, countLines } from "../../utils/wordCount";
 import { Toolbar } from "./Toolbar";
 import { SearchPanel } from "./SearchPanel";
 import { SaveIndicator } from "./SaveIndicator";
+import { convertToMarkdown } from "../../services/aiService";
 import toast from "react-hot-toast";
 import "./MarkdownEditor.css";
 import { customKeymap } from "./editorShortcuts";
@@ -269,9 +270,63 @@ export function MarkdownEditor() {
     view.focus();
   };
 
+  const handleAIAction = async (action: "convert") => {
+    const view = viewRef.current;
+    if (!view) return;
+
+    const selection = view.state.selection.main;
+    const selectedText = view.state.doc.sliceString(
+      selection.from,
+      selection.to,
+    );
+
+    const textToProcess = selectedText || view.state.doc.toString();
+
+    if (!textToProcess.trim()) {
+      toast.error("编辑器中没有内容可以整理");
+      return;
+    }
+
+    const loadingToast = toast.loading("AI 正在整理文档...");
+
+    try {
+      const result = await convertToMarkdown(textToProcess);
+
+      if (result?.error) {
+        toast.error(result.error, { id: loadingToast });
+        return;
+      }
+
+      if (result?.content) {
+        if (selectedText) {
+          // 替换选中文字
+          view.dispatch({
+            changes: {
+              from: selection.from,
+              to: selection.to,
+              insert: result.content,
+            },
+          });
+        } else {
+          // 替换全文
+          view.dispatch({
+            changes: {
+              from: 0,
+              to: view.state.doc.length,
+              insert: result.content,
+            },
+          });
+        }
+        toast.success("文档整理完成", { id: loadingToast });
+      }
+    } catch (error: any) {
+      toast.error("AI 服务请求失败: " + error.message, { id: loadingToast });
+    }
+  };
+
   return (
     <div className="markdown-editor">
-      <Toolbar onInsert={handleInsert} />
+      <Toolbar onInsert={handleInsert} onAIAction={handleAIAction} />
       {showSearch && viewRef.current && (
         <SearchPanel
           view={viewRef.current}

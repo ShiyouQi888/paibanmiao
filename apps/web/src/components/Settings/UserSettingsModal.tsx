@@ -16,11 +16,27 @@ import "./UserSettingsModal.css";
 interface UserSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialTab?: "profile" | "settings";
+  initialSection?: "none" | "storage" | "imagehost" | "ai";
 }
 
-export function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
+export function UserSettingsModal({
+  isOpen,
+  onClose,
+  initialTab = "profile",
+  initialSection = "none",
+}: UserSettingsModalProps) {
   const { user, logout, updateUser } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<"profile" | "settings">("profile");
+  const [activeTab, setActiveTab] = useState<"profile" | "settings">(
+    initialTab,
+  );
+
+  // 当 initialTab 变化时更新内部状态
+  React.useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab, isOpen]);
 
   if (!isOpen) return null;
 
@@ -167,7 +183,7 @@ export function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
             </div>
           ) : (
             <div className="settings-section">
-              <SettingsPanel />
+              <SettingsPanel initialSection={initialSection} />
             </div>
           )}
         </div>
