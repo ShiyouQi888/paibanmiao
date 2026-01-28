@@ -311,12 +311,14 @@ export function IndexedHistoryPanel() {
                             onChange={(e) => setTempTitle(e.target.value)}
                             autoFocus
                           />
-                          <button onClick={() => confirmRename(entry)}>
-                            确认
-                          </button>
-                          <button onClick={() => setRenamingId(null)}>
-                            取消
-                          </button>
+                          <div className="history-rename-actions">
+                            <button onClick={() => confirmRename(entry)}>
+                              确认
+                            </button>
+                            <button onClick={() => setRenamingId(null)}>
+                              取消
+                            </button>
+                          </div>
                         </div>
                       ) : (
                         <span className="history-title">

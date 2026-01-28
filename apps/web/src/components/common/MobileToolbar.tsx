@@ -6,6 +6,7 @@ import {
   Palette,
   X,
   User,
+  History,
 } from "lucide-react";
 import { useState } from "react";
 import type { MobileViewType } from "../../hooks/useMobileView";
@@ -17,6 +18,7 @@ interface MobileToolbarProps {
   onCopyToWechat: () => void;
   onOpenTheme: () => void;
   onOpenUser?: () => void;
+  onOpenHistory?: () => void;
 }
 
 /**
@@ -28,6 +30,7 @@ export function MobileToolbar({
   onCopyToWechat,
   onOpenTheme,
   onOpenUser,
+  onOpenHistory,
 }: MobileToolbarProps) {
   const [showMenu, setShowMenu] = useState(false);
 
@@ -50,6 +53,16 @@ export function MobileToolbar({
               </button>
             </div>
             <div className="mobile-menu-list">
+              <button
+                className="mobile-menu-item"
+                onClick={() => {
+                  onOpenHistory?.();
+                  setShowMenu(false);
+                }}
+              >
+                <History size={20} />
+                <span>文章管理</span>
+              </button>
               <button
                 className="mobile-menu-item"
                 onClick={() => {

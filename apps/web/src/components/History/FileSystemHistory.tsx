@@ -224,10 +224,12 @@ themeName: ${themeState.themeName}
                           }}
                           autoFocus
                         />
-                        <button onClick={submitRename}>确认</button>
-                        <button onClick={() => setRenamingPath(null)}>
-                          取消
-                        </button>
+                        <div className="history-rename-actions">
+                          <button onClick={submitRename}>确认</button>
+                          <button onClick={() => setRenamingPath(null)}>
+                            取消
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <span className="history-title">{file.name}</span>

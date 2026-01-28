@@ -44,6 +44,11 @@ const UserSettingsModal = lazy(() =>
     default: m.UserSettingsModal,
   })),
 );
+const MobileHistoryModal = lazy(() =>
+  import("./components/History/MobileHistoryModal").then((m) => ({
+    default: m.MobileHistoryModal,
+  })),
+);
 import { LandingPage } from "./components/LandingPage/LandingPage";
 import { MobileThemeSelector } from "./components/Theme/MobileThemeSelector";
 import { SidebarNav } from "./components/Sidebar/SidebarNav";
@@ -75,6 +80,7 @@ function App() {
   const copyToWechat = useEditorStore((state) => state.copyToWechat);
   const [showThemePanel, setShowThemePanel] = useState(false);
   const [isUserSettingsOpen, setIsUserSettingsOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [showLanding, setShowLanding] = useState(() => {
     // Electron 模式不显示官网，Web 模式默认显示
     if (platform.isElectron) return false;
@@ -302,6 +308,16 @@ function App() {
         />
       </Suspense>
 
+      {/* 移动端文章管理 Modal */}
+      {isMobile && (
+        <Suspense fallback={null}>
+          <MobileHistoryModal
+            isOpen={isHistoryOpen}
+            onClose={() => setIsHistoryOpen(false)}
+          />
+        </Suspense>
+      )}
+
       <Toaster
         position="top-center"
         toastOptions={{
@@ -432,6 +448,7 @@ function App() {
             onCopyToWechat={copyToWechat}
             onOpenTheme={() => setShowThemePanel(true)}
             onOpenUser={() => setIsUserSettingsOpen(true)}
+            onOpenHistory={() => setIsHistoryOpen(true)}
           />
         )}
       </main>
