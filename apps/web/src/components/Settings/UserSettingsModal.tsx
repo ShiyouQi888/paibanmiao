@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { 
-  X, 
-  User, 
-  Settings as SettingsIcon, 
-  LogOut, 
+import React, { useState } from "react";
+import {
+  X,
+  User,
+  Settings as SettingsIcon,
+  LogOut,
   Camera,
   Mail,
   Shield,
-  Info
-} from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
-import { SettingsPanel } from './SettingsPanel';
-import './UserSettingsModal.css';
+  Info,
+} from "lucide-react";
+import { useAuthStore } from "../../store/authStore";
+import { SettingsPanel } from "./SettingsPanel";
+import "./UserSettingsModal.css";
 
 interface UserSettingsModalProps {
   isOpen: boolean;
@@ -20,13 +20,13 @@ interface UserSettingsModalProps {
 
 export function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
   const { user, logout, updateUser } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'profile' | 'settings'>('profile');
+  const [activeTab, setActiveTab] = useState<"profile" | "settings">("profile");
 
   if (!isOpen) return null;
 
   return (
     <div className="user-settings-overlay" onClick={onClose}>
-      <div className="user-settings-modal" onClick={e => e.stopPropagation()}>
+      <div className="user-settings-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onClose}>
           <X size={20} />
         </button>
@@ -49,27 +49,40 @@ export function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
           </div>
 
           <div className="modal-nav">
-            <button 
-              className={`nav-item ${activeTab === 'profile' ? 'is-active' : ''}`}
-              onClick={() => setActiveTab('profile')}
+            <button
+              className={`nav-item ${activeTab === "profile" ? "is-active" : ""}`}
+              onClick={() => setActiveTab("profile")}
             >
               <User size={18} />
               <span>个人资料</span>
             </button>
-            <button 
-              className={`nav-item ${activeTab === 'settings' ? 'is-active' : ''}`}
-              onClick={() => setActiveTab('settings')}
+            <button
+              className={`nav-item ${activeTab === "settings" ? "is-active" : ""}`}
+              onClick={() => setActiveTab("settings")}
             >
               <SettingsIcon size={18} />
               <span>系统设置</span>
             </button>
+            <button
+              className="nav-item mobile-only logout-nav-item"
+              onClick={() => {
+                logout();
+                onClose();
+              }}
+            >
+              <LogOut size={18} />
+              <span>退出登录</span>
+            </button>
           </div>
 
           <div className="modal-sidebar-footer">
-            <button className="logout-btn" onClick={() => {
-              logout();
-              onClose();
-            }}>
+            <button
+              className="logout-btn"
+              onClick={() => {
+                logout();
+                onClose();
+              }}
+            >
               <LogOut size={18} />
               <span>退出登录</span>
             </button>
@@ -77,7 +90,7 @@ export function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
         </div>
 
         <div className="modal-content">
-          {activeTab === 'profile' ? (
+          {activeTab === "profile" ? (
             <div className="profile-section">
               <div className="section-header">
                 <h2>个人资料</h2>
@@ -107,10 +120,12 @@ export function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
                     <label>用户名</label>
                     <div className="input-wrapper">
                       <User size={16} />
-                      <input 
-                        type="text" 
-                        value={user?.username || ''} 
-                        onChange={(e) => updateUser({ username: e.target.value })}
+                      <input
+                        type="text"
+                        value={user?.username || ""}
+                        onChange={(e) =>
+                          updateUser({ username: e.target.value })
+                        }
                         placeholder="请输入用户名"
                       />
                     </div>
@@ -119,9 +134,9 @@ export function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
                     <label>电子邮箱</label>
                     <div className="input-wrapper">
                       <Mail size={16} />
-                      <input 
-                        type="email" 
-                        value={user?.email || ''} 
+                      <input
+                        type="email"
+                        value={user?.email || ""}
                         readOnly
                         placeholder="email@example.com"
                       />
@@ -129,8 +144,8 @@ export function UserSettingsModal({ isOpen, onClose }: UserSettingsModalProps) {
                   </div>
                   <div className="form-item full-width">
                     <label>个人简介</label>
-                    <textarea 
-                      value={user?.bio || ''} 
+                    <textarea
+                      value={user?.bio || ""}
                       onChange={(e) => updateUser({ bio: e.target.value })}
                       placeholder="介绍一下你自己吧..."
                       rows={3}

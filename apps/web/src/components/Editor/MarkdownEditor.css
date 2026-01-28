@@ -102,6 +102,13 @@
   margin: 0 auto;
 }
 
+/* 移动端自适应 */
+@media (max-width: 768px) {
+  .editor-container .cm-content {
+    padding: 16px 20px !important;
+  }
+}
+
 .editor-container .cm-line {
   padding: 0 4px;
 }

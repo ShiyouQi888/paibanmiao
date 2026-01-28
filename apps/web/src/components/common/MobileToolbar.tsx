@@ -1,4 +1,12 @@
-import { Pencil, Eye, Copy, MoreHorizontal, Palette, X } from "lucide-react";
+import {
+  Pencil,
+  Eye,
+  Copy,
+  MoreHorizontal,
+  Palette,
+  X,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 import type { MobileViewType } from "../../hooks/useMobileView";
 import "./MobileToolbar.css";
@@ -8,6 +16,7 @@ interface MobileToolbarProps {
   onViewChange: (view: MobileViewType) => void;
   onCopyToWechat: () => void;
   onOpenTheme: () => void;
+  onOpenUser?: () => void;
 }
 
 /**
@@ -18,6 +27,7 @@ export function MobileToolbar({
   onViewChange,
   onCopyToWechat,
   onOpenTheme,
+  onOpenUser,
 }: MobileToolbarProps) {
   const [showMenu, setShowMenu] = useState(false);
 
@@ -40,6 +50,16 @@ export function MobileToolbar({
               </button>
             </div>
             <div className="mobile-menu-list">
+              <button
+                className="mobile-menu-item"
+                onClick={() => {
+                  onOpenUser?.();
+                  setShowMenu(false);
+                }}
+              >
+                <User size={20} />
+                <span>个人资料与设置</span>
+              </button>
               <button
                 className="mobile-menu-item"
                 onClick={() => {

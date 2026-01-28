@@ -35,10 +35,14 @@ const UpdateModal = lazy(() =>
   })),
 );
 const ThemePanel = lazy(() =>
-  import("./components/Theme/ThemePanel").then((m) => ({ default: m.ThemePanel })),
+  import("./components/Theme/ThemePanel").then((m) => ({
+    default: m.ThemePanel,
+  })),
 );
 const UserSettingsModal = lazy(() =>
-  import("./components/Settings/UserSettingsModal").then((m) => ({ default: m.UserSettingsModal })),
+  import("./components/Settings/UserSettingsModal").then((m) => ({
+    default: m.UserSettingsModal,
+  })),
 );
 import { LandingPage } from "./components/LandingPage/LandingPage";
 import { MobileThemeSelector } from "./components/Theme/MobileThemeSelector";
@@ -76,7 +80,7 @@ function App() {
     if (platform.isElectron) return false;
     // 如果 URL 有 workspace 参数或已经在编辑器中，可以跳过
     const params = new URLSearchParams(window.location.search);
-    return !params.has('editor');
+    return !params.has("editor");
   });
 
   // 全局保存快捷键（统一监听器）
@@ -111,7 +115,9 @@ function App() {
     const availableHandler = electron.update.onUpdateAvailable(
       (data: UpdateEventData) => {
         // 检查是否跳过了此版本（除非是强制检查）
-        const skippedVersion = localStorage.getItem("paibanmiao-skipped-version");
+        const skippedVersion = localStorage.getItem(
+          "paibanmiao-skipped-version",
+        );
         if (!data.force && skippedVersion === data.latestVersion) {
           return; // 用户之前选择跳过此版本
         }
@@ -152,7 +158,7 @@ function App() {
     const saved = localStorage.getItem("paibanmiao-show-history");
     return saved !== "false";
   });
-  const [activeTab, setActiveTab] = useState<'history'>('history');
+  const [activeTab, setActiveTab] = useState<"history">("history");
 
   const handleCreateFile = React.useCallback(async () => {
     await createFile();
@@ -195,36 +201,36 @@ function App() {
 
   const handleMouseMove = React.useCallback((e: MouseEvent) => {
     if (!isDraggingRef.current) return;
-    const workspace = document.querySelector('.workspace');
+    const workspace = document.querySelector(".workspace");
     if (!workspace) return;
     const rect = workspace.getBoundingClientRect();
     const newRatio = ((e.clientX - rect.left) / rect.width) * 100;
-    if (newRatio > 20 && newRatio < 80) { // 限制拖拽范围
+    if (newRatio > 20 && newRatio < 80) {
+      // 限制拖拽范围
       setSplitRatio(newRatio);
     }
   }, []);
 
   const handleMouseUp = React.useCallback(() => {
     isDraggingRef.current = false;
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-    document.body.style.cursor = 'default';
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+    document.body.style.cursor = "default";
   }, [handleMouseMove]);
 
-  const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    isDraggingRef.current = true;
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    document.body.style.cursor = 'col-resize';
-  }, [handleMouseMove, handleMouseUp]);
+  const handleMouseDown = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      isDraggingRef.current = true;
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "col-resize";
+    },
+    [handleMouseMove, handleMouseUp],
+  );
 
   if (showLanding) {
-    return (
-      <LandingPage 
-        onStart={() => setShowLanding(false)} 
-      />
-    );
+    return <LandingPage onStart={() => setShowLanding(false)} />;
   }
 
   // Electron 模式：强制选择工作区
@@ -288,150 +294,147 @@ function App() {
         </Suspense>
       )}
 
-      {/* 用户资料与设置 Modal (桌面端) */}
-      {!isMobile && (
-        <Suspense fallback={null}>
-          <UserSettingsModal
-            isOpen={isUserSettingsOpen}
-            onClose={() => setIsUserSettingsOpen(false)}
-          />
-        </Suspense>
-      )}
-
-      <>
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            className: "premium-toast",
-            style: {
-              background: "rgba(255, 255, 255, 0.9)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              color: "#1a1a1a",
-              boxShadow: "0 12px 30px -10px rgba(0, 0, 0, 0.12)",
-              borderRadius: "50px",
-              padding: "10px 20px",
-              fontSize: "14px",
-              fontWeight: 500,
-              border: "1px solid rgba(0, 0, 0, 0.05)",
-              maxWidth: "400px",
-            },
-            success: {
-              iconTheme: {
-                primary: "#07c160",
-                secondary: "#fff",
-              },
-              duration: 2000,
-            },
-            error: {
-              iconTheme: {
-                primary: "#ef4444",
-                secondary: "#fff",
-              },
-              duration: 3000,
-            },
-          }}
+      {/* 用户资料与设置 Modal */}
+      <Suspense fallback={null}>
+        <UserSettingsModal
+          isOpen={isUserSettingsOpen}
+          onClose={() => setIsUserSettingsOpen(false)}
         />
-        <main
-          className={mainClass}
-          style={mainStyle}
-          data-show-history={showHistory}
-        >
-          {!isMobile && (
-            <SidebarNav 
-              isCollapsed={!showHistory} 
-              onToggle={() => setShowHistory(prev => !prev)}
-              activeTab={activeTab}
-              onTabChange={setActiveTab as any}
-              onUserClick={() => setIsUserSettingsOpen(true)}
-              onCreateFile={handleCreateFile}
-            >
-              {ready && (
-                <Suspense
-                  fallback={
-                    <div className="workspace-loading">
-                      <Loader2 className="animate-spin" size={24} />
-                    </div>
-                  }
-                >
-                  <HistoryPanel />
-                </Suspense>
-              )}
-            </SidebarNav>
-          )}
+      </Suspense>
 
-          <div className="workspace-container">
-             <WorkbenchHeader
-               onThemeClick={() => setShowThemePanel(true)}
-               onCopyClick={copyToWechat}
-             />
-             <div className="workspace-content">
-                <div
-                  className="workspace"
-                  data-mobile-view={isMobile ? activeView : undefined}
-                >
-                  <div
-                    className="editor-pane"
-                    style={!isMobile ? { width: `${splitRatio}%` } : undefined}
-                  >
-                    {/* 存储未就绪或文件/历史加载中显示 loading */}
-                    {!ready ||
-                    fileLoading ||
-                    (historyLoading &&
-                      !isElectron &&
-                      storageType === "indexeddb") ? (
-                      <div className="workspace-loading">
-                        <Loader2 className="animate-spin" size={24} />
-                        <p>正在加载文章</p>
-                      </div>
-                    ) : (
-                      <MarkdownEditor />
-                    )}
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          className: "premium-toast",
+          style: {
+            background: "rgba(255, 255, 255, 0.9)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            color: "#1a1a1a",
+            boxShadow: "0 12px 30px -10px rgba(0, 0, 0, 0.12)",
+            borderRadius: "50px",
+            padding: "10px 20px",
+            fontSize: "14px",
+            fontWeight: 500,
+            border: "1px solid rgba(0, 0, 0, 0.05)",
+            maxWidth: "400px",
+          },
+          success: {
+            iconTheme: {
+              primary: "#07c160",
+              secondary: "#fff",
+            },
+            duration: 2000,
+          },
+          error: {
+            iconTheme: {
+              primary: "#ef4444",
+              secondary: "#fff",
+            },
+            duration: 3000,
+          },
+        }}
+      />
+      <main
+        className={mainClass}
+        style={mainStyle}
+        data-show-history={showHistory}
+      >
+        {!isMobile && (
+          <SidebarNav
+            isCollapsed={!showHistory}
+            onToggle={() => setShowHistory((prev) => !prev)}
+            activeTab={activeTab}
+            onTabChange={setActiveTab as any}
+            onUserClick={() => setIsUserSettingsOpen(true)}
+            onCreateFile={handleCreateFile}
+          >
+            {ready && (
+              <Suspense
+                fallback={
+                  <div className="workspace-loading">
+                    <Loader2 className="animate-spin" size={24} />
                   </div>
+                }
+              >
+                <HistoryPanel />
+              </Suspense>
+            )}
+          </SidebarNav>
+        )}
 
-                  {!isMobile && (
-                    <div
-                      className="workspace-divider"
-                      onMouseDown={handleMouseDown}
-                    >
-                      <div className="divider-line" />
-                    </div>
-                  )}
+        <div className="workspace-container">
+          <WorkbenchHeader
+            onThemeClick={() => setShowThemePanel(true)}
+            onCopyClick={copyToWechat}
+          />
+          <div className="workspace-content">
+            <div
+              className="workspace"
+              data-mobile-view={isMobile ? activeView : undefined}
+            >
+              <div
+                className="editor-pane"
+                style={!isMobile ? { width: `${splitRatio}%` } : undefined}
+              >
+                {/* 存储未就绪或文件/历史加载中显示 loading */}
+                {!ready ||
+                fileLoading ||
+                (historyLoading &&
+                  !isElectron &&
+                  storageType === "indexeddb") ? (
+                  <div className="workspace-loading">
+                    <Loader2 className="animate-spin" size={24} />
+                    <p>正在加载文章</p>
+                  </div>
+                ) : (
+                  <MarkdownEditor />
+                )}
+              </div>
 
-                  <div
-                     className="preview-pane"
-                     style={
-                       !isMobile ? { width: `${100 - splitRatio}%` } : undefined
-                     }
-                   >
-                     {!ready ||
-                     fileLoading ||
-                     (historyLoading &&
-                       !isElectron &&
-                       storageType === "indexeddb") ? (
-                       <div className="workspace-loading">
-                         <Loader2 className="animate-spin" size={24} />
-                         <p>正在加载文章</p>
-                       </div>
-                     ) : (
-                       <MarkdownPreview />
-                     )}
-                   </div>
+              {!isMobile && (
+                <div
+                  className="workspace-divider"
+                  onMouseDown={handleMouseDown}
+                >
+                  <div className="divider-line" />
                 </div>
+              )}
+
+              <div
+                className="preview-pane"
+                style={
+                  !isMobile ? { width: `${100 - splitRatio}%` } : undefined
+                }
+              >
+                {!ready ||
+                fileLoading ||
+                (historyLoading &&
+                  !isElectron &&
+                  storageType === "indexeddb") ? (
+                  <div className="workspace-loading">
+                    <Loader2 className="animate-spin" size={24} />
+                    <p>正在加载文章</p>
+                  </div>
+                ) : (
+                  <MarkdownPreview />
+                )}
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* 移动端底部工具栏 */}
-          {isMobile && (
-            <MobileToolbar
-              activeView={activeView}
-              onViewChange={setActiveView}
-              onCopyToWechat={copyToWechat}
-              onOpenTheme={() => setShowThemePanel(true)}
-            />
-          )}
-        </main>
-      </>
+        {/* 移动端底部工具栏 */}
+        {isMobile && (
+          <MobileToolbar
+            activeView={activeView}
+            onViewChange={setActiveView}
+            onCopyToWechat={copyToWechat}
+            onOpenTheme={() => setShowThemePanel(true)}
+            onOpenUser={() => setIsUserSettingsOpen(true)}
+          />
+        )}
+      </main>
 
       {/* 移动端主题选择器 */}
       {isMobile && (
